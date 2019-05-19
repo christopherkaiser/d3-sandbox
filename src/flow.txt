@@ -1,0 +1,22 @@
+process flow
+
+define dataset
+define xprop yprop
+define xrange from dataset.xprop validFn
+define yset from dataset.yprop validFn
+
+define newset = generate a (x, y)[] for each val in yset
+
+applyFn on n of newset (x, y)[] -> (x, y)[] 
+
+
+
+
+
+
+
+define dataset
+define xprop
+get valid set of dataset.xprop
+define x sort dataset.xprop
+calcy  foreach x and create (x, y)[]

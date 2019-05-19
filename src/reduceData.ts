@@ -14,6 +14,20 @@ const getRatio = (year: number) => {
   return goodBadRatio;
 };
 
+const getPercBlock = (year: number) => {
+  const goodCount = data.reduce(
+    (acc, current) => acc + ((current.ALIGN === "Good Characters" && current.YEAR === year) ? 1 : 0)
+    ,0
+  );
+  const badCount = data.reduce(
+    (acc, current) => acc + ((current.ALIGN === "Bad Characters" && current.YEAR === year) ? 1 : 0)
+    ,0
+  );
+  const goodBadPerc = goodCount / (goodCount + (badCount ? badCount : 1));
+  
+  return goodBadPerc;
+};
+
 const propSet = (yProp: string): string[] => data.reduce(
   (acc, current) => (!current[yProp] || acc.includes(current[yProp])) ? [...acc] : [...acc, current[yProp]], 
   []

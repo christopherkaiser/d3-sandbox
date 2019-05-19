@@ -3,6 +3,7 @@ import './App.css';
 import * as d3 from 'd3';
 import data from './data/dc-wikia-data.json';
 import * as test from './reduceData';
+import lineData from './test1';
 /*
 function responsivefy(svg: any) {
   // get container + svg aspect ratio
@@ -31,6 +32,7 @@ function responsivefy(svg: any) {
   }
 }
 */
+/*
 const propIdentity = 'ALIGN';
 const alignSet = test.propSet(propIdentity);
 
@@ -55,6 +57,20 @@ const compareYear = (a: any, b: any) => {
     return -1
   return 0
 }
+
+const compareProp = (propName: string) => (a: any, b: any) => {
+  if(a[propName] > b[propName])
+    return 1;
+  else if(a[propName] < b[propName])
+    return -1;
+  return 0;
+}
+
+const getNearByItems = (n: number, index: number, set: any[]) => {
+  const low = index - n >= 0 ? index - n : 0;
+  const high = index + n < set.length ? index + n : set.length;
+  return set.slice(low, high+1);
+};
 //////////
 
 
@@ -83,34 +99,6 @@ const line = d3.line()
   .curve(d3.curveCatmullRom.alpha(0.5));
 
 const yearSet = unique(data, "YEAR").filter(year => year);
-
-const getRatio = (year: number) => {
-  const goodCount = data.reduce(
-    (acc, current) => acc + ((current.ALIGN === "Good Characters" && current.YEAR === year) ? 1 : 0)
-    ,0
-  );
-  const badCount = data.reduce(
-    (acc, current) => acc + ((current.ALIGN === "Bad Characters" && current.YEAR === year) ? 1 : 0)
-    ,0
-  );
-  const goodBadRatio = goodCount / (badCount ? badCount : 1);
-  
-  return goodBadRatio;
-};
-
-const getPerc = (year: number) => {
-  const goodCount = data.reduce(
-    (acc, current) => acc + ((current.ALIGN === "Good Characters" && current.YEAR === year) ? 1 : 0)
-    ,0
-  );
-  const badCount = data.reduce(
-    (acc, current) => acc + ((current.ALIGN === "Bad Characters" && current.YEAR === year) ? 1 : 0)
-    ,0
-  );
-  const goodBadPerc = goodCount / (goodCount + (badCount ? badCount : 1));
-  
-  return goodBadPerc;
-};
 
 const ratioSet = yearSet.map(year => ({
   year: year,
@@ -152,12 +140,6 @@ const lineDataAvg: [number, number][] = yearSet.reduce(
     avgRatio
   ]
 });
-
-const getNearByItems = (n: number, index: number, set: any[]) => {
-  const low = index - n >= 0 ? index - n : 0;
-  const high = index + n < set.length ? index + n : set.length;
-  return set.slice(low, high+1);
-};
 
 
 const lineDataMovingAvg = (count: number): [number, number][] => ratioSet.map((ratioObj, index) => {
@@ -223,6 +205,33 @@ perc3.sort(compare);
 const lines = lineDataMovingAvgPercs(5); 
 console.log(alignSet)
 ////////////
+*/
+
+const margin = { top: 10, right: 20, bottom: 30, left: 30 };
+const width = 400 - margin.left - margin.right;
+const height = 565 - margin.top - margin.bottom;
+
+const xScale = d3.scaleLinear()
+  .domain([ 
+    Number(d3.min(data, record => record.YEAR)),
+    Number(d3.max(data, record => record.YEAR))
+  ])
+  .range([0, width]);
+
+const yScale = d3.scaleLinear()
+  .domain([
+    0,
+    1
+  ])
+  .range([height, 0]);
+
+const line = d3.line()
+  .x((d: any) => xScale(d[0]))
+  .y((d: any) => yScale(d[1]))
+  .curve(d3.curveCatmullRom.alpha(0.5));
+
+
+const lines = lineData;
 
 class App extends React.Component {
   componentDidMount(){
